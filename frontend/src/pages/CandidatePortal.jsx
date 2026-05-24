@@ -419,7 +419,7 @@ function AdmitCardsSection({ apps }) {
 
 /* ---------- Grievances ---------- */
 function GrievancesSection({ candidate, myGrievances }) {
-  const { db, setDb } = useStore();
+  const { db, commitOnChain } = useStore();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ type: 'Application Issue', subject: '', description: '' });
 
@@ -429,24 +429,22 @@ function GrievancesSection({ candidate, myGrievances }) {
       return;
     }
     const id = `GRV-${(db.grievances.length + 1).toString().padStart(4, '0')}`;
-    setDb(prev => ({
-      ...prev,
-      grievances: [{
-        id, type: form.type, subject: form.subject,
-        candidateId: candidate.id, candidateName: `${candidate.firstName} ${candidate.lastName}`,
-        priority: 'Medium', status: 'Open',
-        assignedTo: 'grievance.officer@esic.gov.in',
-        raisedAt: new Date().toISOString(),
-        sla: 7,
-      }, ...prev.grievances],
-      blockchain: [{
-        id: `BC-${(prev.blockchain.length + 1).toString().padStart(5, '0')}`,
-        hash: '0x' + Math.random().toString(16).slice(2, 18),
-        timestamp: new Date().toISOString(),
-        entity: 'Grievance', action: `Lodged (${id})`,
-        performedBy: candidate.email, verified: true,
-      }, ...prev.blockchain],
-    }));
+    commitOnChain({
+      entity: 'Grievance',
+      action: `Lodged (${id})`,
+      performedBy: candidate.email,
+      mutate: (prev) => ({
+        ...prev,
+        grievances: [{
+          id, type: form.type, subject: form.subject,
+          candidateId: candidate.id, candidateName: `${candidate.firstName} ${candidate.lastName}`,
+          priority: 'Medium', status: 'Open',
+          assignedTo: 'grievance.officer@esic.gov.in',
+          raisedAt: new Date().toISOString(),
+          sla: 7,
+        }, ...prev.grievances],
+      }),
+    });
     toast.success(`Grievance ${id} lodged — assigned to officer`);
     setOpen(false);
     setForm({ type: 'Application Issue', subject: '', description: '' });

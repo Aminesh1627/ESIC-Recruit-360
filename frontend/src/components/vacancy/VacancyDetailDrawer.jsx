@@ -54,27 +54,27 @@ export function VacancyDetailDrawer({ open, onOpenChange, vacancy }) {
 
   const doApprove = () => {
     const next = NEXT_STATUS[vacancy.status] || 'Approved';
-    updateVacancyStatus(vacancy.id, next, comment);
-    toast.success(`Vacancy ${vacancy.id} → ${next}`);
     setConfirm(null);
     setComment('');
     onOpenChange(false);
+    updateVacancyStatus(vacancy.id, next, comment);
+    toast.success(`Vacancy ${vacancy.id} → ${next}`);
   };
 
   const doReject = () => {
-    updateVacancyStatus(vacancy.id, 'Closed', comment);
-    toast.error(`Vacancy ${vacancy.id} rejected`);
     setConfirm(null);
     setComment('');
     onOpenChange(false);
+    updateVacancyStatus(vacancy.id, 'Closed', comment);
+    toast.error(`Vacancy ${vacancy.id} rejected`);
   };
 
   const doSendBack = () => {
-    updateVacancyStatus(vacancy.id, 'Draft', comment);
-    toast.info(`Vacancy ${vacancy.id} sent back for revision`);
     setConfirm(null);
     setComment('');
     onOpenChange(false);
+    updateVacancyStatus(vacancy.id, 'Draft', comment);
+    toast.info(`Vacancy ${vacancy.id} sent back for revision`);
   };
 
   return (
