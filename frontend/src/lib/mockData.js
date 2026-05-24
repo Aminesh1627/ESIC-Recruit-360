@@ -286,5 +286,38 @@ export function buildMockDb() {
     status: pick(['Draft', 'Approved', 'Published'], r),
   }));
 
-  return { vacancies, candidates, applications, panels, grievances, blockchain, merit, offers, results };
+  const workflows = [
+    { id: 'WF-001', name: 'Vacancy Approval Workflow', steps: ['Create', 'Submit', 'Dept. Head', 'Finance', 'Reservation Cell', 'Competent Authority', 'Publish'], active: true, createdAt: new Date(Date.now() - 30 * 86400000).toISOString() },
+    { id: 'WF-002', name: 'Document Verification Workflow', steps: ['Upload', 'AI Pre-check', 'DV Officer Review', 'Verification', 'Sign-off'], active: true, createdAt: new Date(Date.now() - 24 * 86400000).toISOString() },
+    { id: 'WF-003', name: 'Interview Scheduling Workflow', steps: ['Shortlist', 'Panel Assignment', 'Slot Booking', 'Candidate Notification', 'Conduct', 'Score Submission'], active: true, createdAt: new Date(Date.now() - 18 * 86400000).toISOString() },
+    { id: 'WF-004', name: 'Grievance Resolution Workflow', steps: ['Open', 'Assign', 'In Review', 'Resolution', 'Closure'], active: true, createdAt: new Date(Date.now() - 12 * 86400000).toISOString() },
+  ];
+
+  const PERMS = ['view', 'create', 'approve', 'reject', 'publish', 'audit'];
+  const roles = [
+    'Candidate', 'Recruitment Administrator', 'Establishment Officer', 'Department Head',
+    'HR Officer', 'Reservation Cell Officer', 'Finance Officer', 'Screening Officer',
+    'DV Officer', 'Interview Panel Member', 'Grievance Officer', 'Competent Authority',
+    'Regional Director', 'Super Admin',
+  ].map((name, i) => ({
+    id: `ROLE-${(i + 1).toString().padStart(2, '0')}`, name,
+    users: randInt(1, 24, r),
+    permissions: PERMS.filter(() => r() > 0.4),
+    active: true,
+    createdAt: new Date(Date.now() - randInt(60, 500, r) * 86400000).toISOString(),
+  }));
+
+  const masterData = {
+    'Pay Matrix Levels': ['Level-4', 'Level-6', 'Level-7', 'Level-8', 'Level-10', 'Level-11', 'Level-12', 'Level-13', 'Level-14'],
+    'Departments': DEPARTMENTS,
+    'Locations': LOCATIONS,
+    'Cadres': ['Direct Recruitment', 'Promotion', 'Deputation', 'Lateral Entry'],
+    'Categories': CATEGORIES,
+    'Identity Types': ['Aadhaar', 'PAN', 'Passport', 'Voter ID', 'Driving License'],
+    'Document Types': ['Photograph', 'Signature', 'Degree Certificate', 'Category Certificate', 'Experience Letter', 'PwD Certificate'],
+    'States & Districts': STATES,
+    'Selection Stages': ['CBT', 'Skill Test', 'Document Verification', 'Interview', 'Medical Test'],
+  };
+
+  return { vacancies, candidates, applications, panels, grievances, blockchain, merit, offers, results, workflows, roles, masterData };
 }

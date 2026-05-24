@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import { buildMockDb } from './mockData';
+import { showTxToast } from './blockchain';
 
 const StoreContext = createContext(null);
 
@@ -24,7 +25,18 @@ export function StoreProvider({ children }) {
   const [db, setDb] = useState(() => {
     try {
       const raw = localStorage.getItem('esic_db_v1');
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        // Backward-compat: ensure new collections exist for sessions hydrated
+        // from older mock seeds (workflows / roles / masterData were added later).
+        const fresh = buildMockDb();
+        return {
+          ...parsed,
+          workflows: parsed.workflows ?? fresh.workflows,
+          roles: parsed.roles ?? fresh.roles,
+          masterData: parsed.masterData ?? fresh.masterData,
+        };
+      }
     } catch (e) {}
     return buildMockDb();
   });
@@ -71,23 +83,35 @@ export function StoreProvider({ children }) {
     entity, action, performedBy, verified: true,
   }, ...prev.blockchain]);
 
+  const _navigateToLedger = () => {
+    // navigation handled by caller via onView; default = goto /audit
+    try { window.history.pushState({}, '', '/audit'); window.dispatchEvent(new PopStateEvent('popstate')); } catch (e) {}
+  };
+
   const updateVacancyStatus = useCallback((id, status, comment) => {
+    const tx = showTxToast({ entity: 'Vacancy', action: `Status → ${status} (${id})`, performedBy: 'user@esic.gov.in', onView: _navigateToLedger });
     setDb(prev => ({
       ...prev,
       vacancies: prev.vacancies.map(v => v.id === id ? {
         ...v, status,
         approvals: [...v.approvals, { stage: status, status: 'Approved', by: 'user@esic.gov.in', at: new Date().toISOString(), comment: comment || '—' }],
       } : v),
-      blockchain: addBlockEvent(prev, 'Vacancy', `Status → ${status} (${id})`, 'user@esic.gov.in'),
+      blockchain: [{
+        id: `BC-${(prev.blockchain.length + 1).toString().padStart(5, '0')}`,
+        hash: tx.hash, timestamp: new Date().toISOString(),
+        entity: 'Vacancy', action: `Status → ${status} (${id})`,
+        performedBy: tx.performedBy, verified: true, gasSavings: tx.gas, block: tx.block,
+      }, ...prev.blockchain],
     }));
   }, []);
 
   const addVacancy = useCallback((vacancy) => {
     setDb(prev => {
       const id = `VAC-2025-${(prev.vacancies.length + 1).toString().padStart(4, '0')}`;
+      const tx = showTxToast({ entity: 'Vacancy', action: `Created (${id})`, performedBy: 'user@esic.gov.in', onView: _navigateToLedger });
       const newVac = {
         id, applications: 0, approvals: [],
-        blockchain: { hash: '0x' + Math.random().toString(16).slice(2, 18), timestamp: new Date().toISOString(), verified: true },
+        blockchain: { hash: tx.hash, timestamp: new Date().toISOString(), verified: true },
         createdAt: new Date().toISOString(),
         createdBy: 'user@esic.gov.in',
         status: 'Draft',
@@ -96,33 +120,76 @@ export function StoreProvider({ children }) {
       return {
         ...prev,
         vacancies: [newVac, ...prev.vacancies],
-        blockchain: addBlockEvent(prev, 'Vacancy', `Created (${id})`, 'user@esic.gov.in'),
+        blockchain: [{
+          id: `BC-${(prev.blockchain.length + 1).toString().padStart(5, '0')}`,
+          hash: tx.hash, timestamp: new Date().toISOString(),
+          entity: 'Vacancy', action: `Created (${id})`,
+          performedBy: tx.performedBy, verified: true, gasSavings: tx.gas, block: tx.block,
+        }, ...prev.blockchain],
       };
     });
   }, []);
 
   const updateApplicationStatus = useCallback((id, status) => {
+    const tx = showTxToast({ entity: 'Application', action: `Status → ${status} (${id})`, performedBy: 'screening.officer@esic.gov.in', onView: _navigateToLedger });
     setDb(prev => ({
       ...prev,
       applications: prev.applications.map(a => a.id === id ? { ...a, status } : a),
-      blockchain: addBlockEvent(prev, 'Application', `Status → ${status} (${id})`, 'screening.officer@esic.gov.in'),
+      blockchain: [{
+        id: `BC-${(prev.blockchain.length + 1).toString().padStart(5, '0')}`,
+        hash: tx.hash, timestamp: new Date().toISOString(),
+        entity: 'Application', action: `Status → ${status} (${id})`,
+        performedBy: tx.performedBy, verified: true, gasSavings: tx.gas, block: tx.block,
+      }, ...prev.blockchain],
     }));
   }, []);
 
   const updateGrievanceStatus = useCallback((id, status) => {
+    const tx = showTxToast({ entity: 'Grievance', action: `Status → ${status} (${id})`, performedBy: 'grievance.officer@esic.gov.in', onView: _navigateToLedger });
     setDb(prev => ({
       ...prev,
       grievances: prev.grievances.map(g => g.id === id ? { ...g, status } : g),
-      blockchain: addBlockEvent(prev, 'Grievance', `Status → ${status} (${id})`, 'grievance.officer@esic.gov.in'),
+      blockchain: [{
+        id: `BC-${(prev.blockchain.length + 1).toString().padStart(5, '0')}`,
+        hash: tx.hash, timestamp: new Date().toISOString(),
+        entity: 'Grievance', action: `Status → ${status} (${id})`,
+        performedBy: tx.performedBy, verified: true, gasSavings: tx.gas, block: tx.block,
+      }, ...prev.blockchain],
     }));
   }, []);
 
   const updateOfferStatus = useCallback((id, status) => {
+    const tx = showTxToast({ entity: 'Offer Letter', action: `Status → ${status} (${id})`, performedBy: 'hr.officer@esic.gov.in', onView: _navigateToLedger });
     setDb(prev => ({
       ...prev,
       offers: prev.offers.map(o => o.id === id ? { ...o, status } : o),
-      blockchain: addBlockEvent(prev, 'Offer', `Status → ${status} (${id})`, 'user@esic.gov.in'),
+      blockchain: [{
+        id: `BC-${(prev.blockchain.length + 1).toString().padStart(5, '0')}`,
+        hash: tx.hash, timestamp: new Date().toISOString(),
+        entity: 'Offer Letter', action: `Status → ${status} (${id})`,
+        performedBy: tx.performedBy, verified: true, gasSavings: tx.gas, block: tx.block,
+      }, ...prev.blockchain],
     }));
+  }, []);
+
+  /**
+   * Generic on-chain commit for arbitrary actions (workflow create, role create,
+   * master data update, result publish, etc.). Logs to blockchain & fires the
+   * tx toast.
+   */
+  const commitOnChain = useCallback(({ entity, action, performedBy = 'user@esic.gov.in', mutate }) => {
+    const tx = showTxToast({ entity, action, performedBy, onView: _navigateToLedger });
+    setDb(prev => {
+      const block = {
+        id: `BC-${(prev.blockchain.length + 1).toString().padStart(5, '0')}`,
+        hash: tx.hash, timestamp: new Date().toISOString(),
+        entity, action, performedBy: tx.performedBy, verified: true,
+        gasSavings: tx.gas, block: tx.block,
+      };
+      const next = typeof mutate === 'function' ? mutate(prev) : prev;
+      return { ...next, blockchain: [block, ...next.blockchain] };
+    });
+    return tx;
   }, []);
 
   const resetData = useCallback(() => { setDb(buildMockDb()); }, []);
@@ -135,8 +202,9 @@ export function StoreProvider({ children }) {
     db, setDb, user, login, logout,
     notifications, markNotificationsRead,
     addVacancy, updateVacancyStatus, updateApplicationStatus, updateGrievanceStatus, updateOfferStatus,
+    commitOnChain,
     resetData, ROLES,
-  }), [db, user, notifications, login, logout, addVacancy, updateVacancyStatus, updateApplicationStatus, updateGrievanceStatus, updateOfferStatus, resetData, markNotificationsRead]);
+  }), [db, user, notifications, login, logout, addVacancy, updateVacancyStatus, updateApplicationStatus, updateGrievanceStatus, updateOfferStatus, commitOnChain, resetData, markNotificationsRead]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

@@ -1,0 +1,48 @@
+{
+  "summary": "Frontend-only validation of ESIC Recruit360 iteration-2 deliverables (blockchain tx toast, Super Admin CRUD tabs, Interview sub-tabs, View Details modals on Results/Ads/Reports/Audit). 30+ flows executed end-to-end. 28 PASS / 1 FAIL (portal grievance tx-toast missing) / 1 PARTIAL (tx-toast View-on-Ledger link is intercepted by vacancy detail drawer overlay, navigation to /audit blocked). Pre-existing iteration-1 warnings (recharts width(-1), DialogContent aria-describedby) still emit on console but are non-blocking.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "CandidatePortal → GrievancesSection.submit (/portal/grievances)",
+        "issue": "Lodge Grievance → Submit DOES NOT fire the custom tx-toast. The handler directly mutates db.grievances + db.blockchain and only calls toast.success(`Grievance … lodged`). Per iteration-2 contract, lodging a grievance must call showTxToast/commitOnChain so the user sees the hash + 'View on ESIC Ledger' link.",
+        "selector": "[data-testid='grievance-submit']",
+        "priority": "HIGH"
+      },
+      {
+        "component": "tx-toast on Vacancy Approve while VacancyDetailDrawer is still open (/vacancies)",
+        "issue": "After Confirm & Sign on-chain, tx-toast appears correctly (hash + gas + block visible), but clicking 'View on ESIC Ledger' (data-testid='tx-toast-view-ledger') does NOT navigate to /audit because the open Sheet/drawer overlay intercepts the pointer event. URL stays on /vacancies. Either auto-close the drawer after doApprove() or raise toast z-index above the Sheet overlay.",
+        "selector": "[data-testid='tx-toast-view-ledger']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "All routes mounting recharts", "issues": ["Recharts still emits width(-1)/height(-1) warnings on first render (carried over from iteration 1, unresolved)."]},
+      {"screen": "Multiple dialogs (vacancy confirm, master-data editor, view-ad drawer, …)", "issues": ["Console keeps logging 'Missing Description or aria-describedby={undefined} for {DialogContent}' (iteration-1 a11y feedback still open)."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix CandidatePortal.jsx GrievancesSection.submit (~L426): replace inline db.blockchain push + plain toast.success with a call to commitOnChain({entity:'Grievance', action:`Lodged (${id})`, mutate: …}) (or call showTxToast) so the custom tx-toast with View-on-Ledger link is shown — required per iteration-2 spec.",
+    "Resolve drawer/toast z-index issue on /vacancies: VacancyDetailDrawer (Sheet) overlay sits above the sonner toast viewport, blocking clicks on 'View on ESIC Ledger'. Either close the Sheet inside doApprove/doReject/doSendBack after success, OR bump the sonner Toaster container z-index above Radix Sheet (default Sheet overlay z-50).",
+    "(Carryover) Add minHeight to recharts ResponsiveContainer wrappers (still spamming width(-1) warnings).",
+    "(Carryover a11y) Add <DialogDescription> to remaining DialogContent instances (vacancy confirm modal, results dialog, master-data dialog, etc.)."
+  ],
+  "critical_code_review_comments": [
+    "Super Admin tab routing is properly bi-directional (URL → tab via useParams + tab → URL via navigate). All 8 deep links activate the matching tab and TabsTrigger clicks update the URL. Solid.",
+    "Workflow/Role/Master-Data/Integration CRUD all go through commitOnChain → showTxToast. Verified each fires the custom tx-toast with valid hash/gas/block.",
+    "Vacancy Approve, Results Publish, Offer Status change ALL fire tx-toast correctly — only the Grievance lodge path is the exception, and that's because CandidatePortal.jsx bypasses the centralized store action and writes to db.blockchain by hand. Centralize this via store action to avoid divergent behaviour.",
+    "BlockchainTimeline events on /audit are clickable and open a clean detail dialog containing Tx hash, Block #, Entity, Action, Performed by, Timestamp — meets spec.",
+    "Interviews page Schedule Calendar correctly renders 7-day grid with deterministic event placement (20 events seeded); Approved Panelists renders 30 unique cards.",
+    "Advertisements view-details opens VacancyDetailDrawer (Sheet) — works. Note same drawer/toast overlay issue would occur if a tx-toast fires from inside this drawer."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only scope)", "frontend": "93% (28/30 iteration-2 checks pass)"},
+  "test_credentials": "Quick sign-in buttons used: 'Recruitment Admin' / 'Candidate' / 'Super Admin'. /app/memory/test_credentials.md still missing.",
+  "seed_data_creation": "None. Cleared localStorage 'esic_db_v1' + 'esic_session' before each role switch to ensure iteration-2 seeds (workflows×4, roles×14, masterData×9) hydrated correctly. Backward-compat merge in store works as advertised.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration-2 verified items (all PASS): vacancy approve tx-toast (after going through Confirm & Sign on-chain dialog with a non-empty comment), audit event detail dialog (data-testid='bc-event-*'), Super Admin route-driven tabs for all 8 sections, Create Workflow + view-details (data-testid='create-workflow-btn' / 'view-workflow-WF-XXX'), Create Role (data-testid='create-role-btn' / 'role-perm-*'), Master Data category cards + value add (data-testid='master-cat-*' / 'master-value-input' / 'master-add-btn'), Add Integration + Test Connection (data-testid='add-integration-btn' / 'integration-name'), Interviews 3 tabs (iv-tab-panels/schedule/panelists), Schedule Calendar week navigation (cal-prev-week/cal-today/cal-next-week, cal-event-*), Results view-details with rank table (view-result-*), Advertisements view-details opens VacancyDetailDrawer (view-ad-*), Reports view (view-report-*), Results Publish tx-toast, Offer Send (status change) tx-toast. Failures: portal grievance submit does not fire showTxToast; tx-toast View-on-Ledger link is blocked by Sheet overlay when triggered from vacancy drawer. Vacancy approve requires opening row → click Approve button (use 'button.bg-secondary' inside dialog) → fill textarea in confirm modal → click 'Confirm & Sign on-chain' (button is disabled until comment.trim() is non-empty). The grievance lodge dialog has TWO inputs (Type Select + Subject Input) + Textarea; submit button text is 'Submit' (data-testid='grievance-submit').",
+  "rca_of_the_issue": "Bug 1 (grievance no tx-toast): CandidatePortal.jsx GrievancesSection.submit (lines ~426-453) does its own setDb() that pushes a blockchain entry by hand and calls toast.success() instead of routing through showTxToast/commitOnChain — divergent from the rest of the store. Fix: replace the inline setDb call with `commitOnChain({entity:'Grievance', action:`Lodged (${id})`, mutate: prev => ({...prev, grievances:[{...new},...prev.grievances]})})` (commitOnChain in store.js already handles the blockchain entry + tx-toast). Bug 2 (View on Ledger link unclickable from vacancy approve): Radix Sheet (vacancy drawer) renders an overlay at z-50 that covers the entire viewport. The sonner Toaster sits below this overlay, so its 'View on ESIC Ledger' anchor receives no pointer events while the Sheet is open. Fix options: (a) call onOpenChange(false) inside doApprove/doReject/doSendBack after the tx-toast fires so the Sheet auto-closes; or (b) push the sonner Toaster z-index above z-50 (e.g., z-[60])."
+}
