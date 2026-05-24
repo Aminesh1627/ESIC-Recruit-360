@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* ESIC Recruit360 Design Tokens */
+        /* Background — soft cool slate */
+        --background: 220 33% 98%;
+        --foreground: 222 47% 11%;
+
+        --card: 0 0% 100%;
+        --card-foreground: 222 47% 11%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222 47% 11%;
+
+        /* Government Blue #0F3D91 */
+        --primary: 220 81% 31%;
+        --primary-foreground: 0 0% 100%;
+        --primary-glow: 220 75% 45%;
+        --primary-soft: 220 60% 96%;
+
+        /* ESIC Green #00A859 */
+        --secondary: 149 100% 33%;
+        --secondary-foreground: 0 0% 100%;
+        --secondary-soft: 149 60% 95%;
+
+        /* Digital Gold #D9A441 */
+        --accent: 41 67% 55%;
+        --accent-foreground: 220 81% 15%;
+        --accent-soft: 41 70% 95%;
+
+        --muted: 220 20% 95%;
+        --muted-foreground: 220 12% 45%;
+
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 100%;
+        --destructive-soft: 0 80% 96%;
+
+        --success: 142 71% 45%;
+        --success-foreground: 0 0% 100%;
+        --success-soft: 142 60% 95%;
+
+        --warning: 38 92% 50%;
+        --warning-foreground: 222 47% 11%;
+        --warning-soft: 38 90% 95%;
+
+        --pending: 239 84% 67%;
+        --pending-foreground: 0 0% 100%;
+        --pending-soft: 239 70% 96%;
+
+        --border: 220 20% 90%;
+        --input: 220 20% 90%;
+        --ring: 220 81% 31%;
+
+        /* Sidebar (deep navy) */
+        --sidebar: 222 47% 11%;
+        --sidebar-foreground: 220 20% 85%;
+        --sidebar-muted: 220 15% 60%;
+        --sidebar-active: 220 81% 45%;
+        --sidebar-border: 220 30% 18%;
+
+        --chart-1: 220 81% 45%;
+        --chart-2: 149 70% 40%;
+        --chart-3: 41 80% 55%;
+        --chart-4: 239 75% 60%;
+        --chart-5: 0 75% 60%;
+
+        /* Gradients (used sparingly) */
+        --gradient-primary: linear-gradient(135deg, hsl(220 81% 25%), hsl(220 75% 40%));
+        --gradient-hero: linear-gradient(135deg, hsl(220 81% 18%) 0%, hsl(220 70% 28%) 50%, hsl(149 65% 25%) 100%);
+        --gradient-accent: linear-gradient(135deg, hsl(41 80% 55%), hsl(38 92% 50%));
+        --gradient-subtle: linear-gradient(180deg, hsl(220 33% 98%), hsl(220 25% 95%));
+
+        --shadow-card: 0 1px 2px hsl(220 40% 15% / 0.04), 0 1px 3px hsl(220 40% 15% / 0.06);
+        --shadow-elevated: 0 4px 6px -1px hsl(220 40% 15% / 0.08), 0 10px 20px -5px hsl(220 40% 15% / 0.08);
+        --shadow-glow: 0 0 0 4px hsl(220 81% 45% / 0.12);
+
+        --radius: 0.5rem;
+    }
+
+    .dark {
+        --background: 222 47% 6%;
+        --foreground: 220 20% 96%;
+        --card: 222 47% 9%;
+        --card-foreground: 220 20% 96%;
+        --popover: 222 47% 9%;
+        --popover-foreground: 220 20% 96%;
+        --primary: 220 75% 60%;
+        --primary-foreground: 222 47% 6%;
+        --secondary: 149 70% 50%;
+        --secondary-foreground: 222 47% 6%;
+        --accent: 41 80% 60%;
+        --accent-foreground: 222 47% 6%;
+        --muted: 222 30% 16%;
+        --muted-foreground: 220 12% 65%;
+        --destructive: 0 70% 55%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 222 30% 18%;
+        --input: 222 30% 18%;
+        --ring: 220 75% 60%;
+    }
+}
+
+@layer base {
+    * { @apply border-border; }
+    html, body, #root { height: 100%; }
+    body {
+        margin: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'IBM Plex Sans', 'Inter', sans-serif;
+        letter-spacing: -0.01em;
+    }
+    code, .mono { font-family: 'IBM Plex Mono', monospace; }
+}
+
+@layer utilities {
+    .text-balance { text-wrap: balance; }
+    .gradient-hero { background: var(--gradient-hero); }
+    .gradient-primary { background: var(--gradient-primary); }
+    .gradient-accent { background: var(--gradient-accent); }
+    .gradient-subtle { background: var(--gradient-subtle); }
+    .shadow-card { box-shadow: var(--shadow-card); }
+    .shadow-elevated { box-shadow: var(--shadow-elevated); }
+    .shadow-glow { box-shadow: var(--shadow-glow); }
+
+    .grid-bg {
+        background-image:
+          linear-gradient(hsl(var(--border) / 0.6) 1px, transparent 1px),
+          linear-gradient(90deg, hsl(var(--border) / 0.6) 1px, transparent 1px);
+        background-size: 32px 32px;
+    }
+    .dot-bg {
+        background-image: radial-gradient(hsl(var(--border)) 1px, transparent 1px);
+        background-size: 18px 18px;
+    }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: hsl(var(--muted-foreground) / 0.3); border-radius: 999px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+
+    /* Animations */
+    @keyframes fade-in-up {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up { animation: fade-in-up 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+    @keyframes pulse-ring {
+        0% { box-shadow: 0 0 0 0 hsl(var(--secondary) / 0.5); }
+        70% { box-shadow: 0 0 0 8px hsl(var(--secondary) / 0); }
+        100% { box-shadow: 0 0 0 0 hsl(var(--secondary) / 0); }
+    }
+    .pulse-ring { animation: pulse-ring 2s infinite; }
+}
+
+@layer base {
+    [data-debug-wrapper="true"] { display: contents !important; }
+    [data-debug-wrapper="true"] > * {
+        margin-left: inherit; margin-right: inherit; margin-top: inherit; margin-bottom: inherit;
+        padding-left: inherit; padding-right: inherit; padding-top: inherit; padding-bottom: inherit;
+        column-gap: inherit; row-gap: inherit; gap: inherit;
+        border-left-width: inherit; border-right-width: inherit; border-top-width: inherit; border-bottom-width: inherit;
+        border-left-style: inherit; border-right-style: inherit; border-top-style: inherit; border-bottom-style: inherit;
+        border-left-color: inherit; border-right-color: inherit; border-top-color: inherit; border-bottom-color: inherit;
+    }
+}
