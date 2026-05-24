@@ -76,13 +76,13 @@ export default function Dashboard() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur px-3 py-1 text-xs border border-white/15">
               <span className="h-1.5 w-1.5 rounded-full bg-secondary pulse-ring" />
-              All systems operational · Last block 24s ago
+              {t('allSystemsOperational')}
             </div>
             <h1 className="font-display text-2xl lg:text-3xl font-semibold mt-3 tracking-tight">
               {t('welcomeBack')}, {user?.name?.split(' ')[0]} 👋
             </h1>
             <p className="text-white/75 mt-1 text-sm">
-              {t('yourActivity')} · {notifications.filter(n => !n.read).length} unread notifications · {pendingAppr} approvals pending
+              {t('yourActivity')} · {notifications.filter(n => !n.read).length} {t('unreadNotifications')} · {pendingAppr} {t('approvalsPending')}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -105,16 +105,15 @@ export default function Dashboard() {
         <KpiCard label={t('offersIssued')}        value={db.offers.length}       delta="+8.4%" icon={Award}       tone="success" />
         <KpiCard label={t('blockchainEntries')}   value={db.blockchain.length}   delta="+18%" icon={ShieldCheck} tone="accent" />
       </div>
-
       {/* Charts row */}
       <div className="grid lg:grid-cols-3 gap-4">
         <Card className="p-5 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-display text-base font-semibold">{t('recruitmentPipeline')}</h3>
-              <p className="text-xs text-muted-foreground">Candidates progressing through stages</p>
+              <p className="text-xs text-muted-foreground">{t('candidatesProgressing')}</p>
             </div>
-            <Badge variant="outline" className="text-xs">Live</Badge>
+            <Badge variant="outline" className="text-xs">{t('live')}</Badge>
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -133,7 +132,7 @@ export default function Dashboard() {
 
         <Card className="p-5">
           <h3 className="font-display text-base font-semibold mb-1">{t('applicationsByCategory')}</h3>
-          <p className="text-xs text-muted-foreground mb-3">Reservation distribution</p>
+          <p className="text-xs text-muted-foreground mb-3">{t('reservationDistribution')}</p>
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -151,11 +150,11 @@ export default function Dashboard() {
       <Card className="p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-display text-base font-semibold">Application Trend</h3>
-            <p className="text-xs text-muted-foreground">Last 12 weeks · applications vs shortlisted</p>
+            <h3 className="font-display text-base font-semibold">{t('applicationTrend')}</h3>
+            <p className="text-xs text-muted-foreground">{t('last12Weeks')}</p>
           </div>
           <span className="inline-flex items-center gap-1 text-xs text-success font-medium">
-            <TrendingUp className="h-3.5 w-3.5" /> +24% YoY
+            <TrendingUp className="h-3.5 w-3.5" /> {t('yoyGrowth')}
           </span>
         </div>
         <div className="h-56">
@@ -186,7 +185,7 @@ export default function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-4">
         <Card className="p-5 lg:col-span-2">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-display text-base font-semibold">Recent Vacancies</h3>
+            <h3 className="font-display text-base font-semibold">{t('recentVacancies')}</h3>
             <Button variant="ghost" size="sm" onClick={() => navigate('/vacancies')}>
               {t('seeAll')} <ArrowRight className="h-3.5 w-3.5 ml-1" />
             </Button>
@@ -203,7 +202,7 @@ export default function Dashboard() {
                     <p className="text-sm font-medium truncate">{v.postName}</p>
                     <span className="text-[10px] font-mono text-muted-foreground">{v.id}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{v.department} · {v.location} · {v.totalVacancies} positions</p>
+                  <p className="text-xs text-muted-foreground">{v.department} · {v.location} · {v.totalVacancies} {t('positions')}</p>
                 </div>
                 <StatusBadge status={v.status} />
               </li>

@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Download, Eye, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 export default function MeritListPage() {
   const { db } = useStore();
@@ -113,7 +113,10 @@ export default function MeritListPage() {
 
       <Dialog open={!!open} onOpenChange={(o) => !o && setOpen(null)}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Ranking Detail · #{open?.rank} {open?.candidateName}</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>Ranking Detail · #{open?.rank} {open?.candidateName}</DialogTitle>
+            <DialogDescription>Weighted breakdown of CBT, Interview and DV components driving the final score.</DialogDescription>
+          </DialogHeader>
           <div className="space-y-3">
             {[
               { l: 'CBT Score (60%)', v: open?.cbtScore, w: 60 },

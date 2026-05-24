@@ -78,6 +78,15 @@ export const translations = {
     recentEvents: "Recent Blockchain Events", seeAll: "See all",
     noResults: "No results found", confirmAction: "Confirm Action",
     addComment: "Add a mandatory comment", comment: "Comment",
+    allSystemsOperational: "All systems operational · Last block 24s ago",
+    approvalsPending: "approvals pending", unreadNotifications: "unread notifications",
+    candidatesProgressing: "Candidates progressing through stages",
+    reservationDistribution: "Reservation distribution",
+    live: "Live", vsLastWeek: "vs last week",
+    applicationTrend: "Application Trend",
+    last12Weeks: "Last 12 weeks · applications vs shortlisted",
+    yoyGrowth: "+24% YoY", recentVacancies: "Recent Vacancies",
+    positions: "positions",
   },
 
   ta: {
@@ -166,6 +175,16 @@ export const translations = {
     recentEvents: "சமீபத்திய ப்ளாக்செயின் நிகழ்வுகள்", seeAll: "அனைத்தையும் பார்க்கவும்",
     noResults: "முடிவுகள் இல்லை", confirmAction: "செயலை உறுதிப்படுத்துக",
     addComment: "கட்டாயமான கருத்தை சேர்க்கவும்", comment: "கருத்து",
+    allSystemsOperational: "அனைத்து அமைப்புகளும் செயலில் · கடைசி பிளாக் 24வி முன்",
+    approvalsPending: "நிலுவையில் உள்ள அங்கீகாரங்கள்",
+    unreadNotifications: "படிக்காத அறிவிப்புகள்",
+    candidatesProgressing: "கட்டங்களில் முன்னேறும் விண்ணப்பதாரர்கள்",
+    reservationDistribution: "இட ஒதுக்கீடு பகிர்வு",
+    live: "நேரலை", vsLastWeek: "கடந்த வாரத்துடன் ஒப்பிடுகையில்",
+    applicationTrend: "விண்ணப்ப போக்கு",
+    last12Weeks: "கடந்த 12 வாரங்கள் · விண்ணப்பங்கள் vs குறுகிய பட்டியல்",
+    yoyGrowth: "+24% ஆண்டிற்கு ஆண்டு", recentVacancies: "சமீபத்திய காலிகள்",
+    positions: "பதவிகள்",
   },
 
   hi: {
@@ -250,6 +269,16 @@ export const translations = {
     recentEvents: "हाल की ब्लॉकचेन घटनाएँ", seeAll: "सभी देखें",
     noResults: "कोई परिणाम नहीं मिला", confirmAction: "कार्रवाई की पुष्टि करें",
     addComment: "अनिवार्य टिप्पणी जोड़ें", comment: "टिप्पणी",
+    allSystemsOperational: "सभी सिस्टम चालू · अंतिम ब्लॉक 24सेक पहले",
+    approvalsPending: "अनुमोदन लंबित",
+    unreadNotifications: "अपठित सूचनाएँ",
+    candidatesProgressing: "चरणों में आगे बढ़ने वाले उम्मीदवार",
+    reservationDistribution: "आरक्षण वितरण",
+    live: "लाइव", vsLastWeek: "पिछले सप्ताह की तुलना में",
+    applicationTrend: "आवेदन प्रवृत्ति",
+    last12Weeks: "पिछले 12 सप्ताह · आवेदन बनाम चयनित",
+    yoyGrowth: "+24% वार्षिक वृद्धि", recentVacancies: "हाल की रिक्तियाँ",
+    positions: "पद",
   }
 };
 

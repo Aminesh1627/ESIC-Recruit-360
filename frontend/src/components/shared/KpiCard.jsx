@@ -2,8 +2,10 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLang } from '@/i18n/LanguageContext';
 
 export function KpiCard({ label, value, delta, icon: Icon, tone = 'primary', sublabel }) {
+  const { t } = useLang();
   const tones = {
     primary:    'bg-primary/10 text-primary',
     secondary:  'bg-secondary/10 text-secondary',
@@ -34,7 +36,7 @@ export function KpiCard({ label, value, delta, icon: Icon, tone = 'primary', sub
             {up ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
             {delta}
           </span>
-          <span className="text-muted-foreground">vs last week</span>
+          <span className="text-muted-foreground">{t('vsLastWeek')}</span>
         </div>
       )}
     </Card>

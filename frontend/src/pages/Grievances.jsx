@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Search, Eye, Plus, FlagTriangleRight, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
@@ -96,6 +96,7 @@ export default function GrievancesPage() {
         <DialogContent className="max-w-xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2"><FlagTriangleRight className="h-5 w-5 text-warning" /> {open?.id} · {open?.subject}</DialogTitle>
+            <DialogDescription>Review the grievance, capture resolution notes and route to the next stage.</DialogDescription>
           </DialogHeader>
           {open && (
             <div className="space-y-3">

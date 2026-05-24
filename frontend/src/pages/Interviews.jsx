@@ -6,7 +6,7 @@ import { StatusBadge } from '@/components/shared/StatusBadge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -72,7 +72,10 @@ export default function InterviewsPage() {
 
       <Dialog open={!!open} onOpenChange={(o) => !o && setOpen(null)}>
         <DialogContent className="max-w-2xl">
-          <DialogHeader><DialogTitle>Interview Scorecard · {open?.name}</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>Interview Scorecard · {open?.name}</DialogTitle>
+            <DialogDescription>Score candidates across weighted competencies — submission is signed on-chain.</DialogDescription>
+          </DialogHeader>
           <div className="space-y-4">
             <Card className="p-4 bg-primary-soft/50 border-primary/20">
               <div className="flex items-center gap-3">
