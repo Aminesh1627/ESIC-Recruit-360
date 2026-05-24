@@ -62,10 +62,14 @@ function makeBlockchainEvents(r, count) {
     { entity: 'Offer Letter', action: 'Generated' },
   ];
   const performers = ['admin@esic.gov.in', 'finance@esic.gov.in', 'reservation@esic.gov.in', 'rd@esic.gov.in', 'system@esic'];
+  const validators = ['esic-validator-01.gov.in', 'esic-validator-02.gov.in', 'esic-validator-03.gov.in', 'esic-validator-rd-04.gov.in'];
   const out = [];
   const now = Date.now();
+  const startBlock = 8_420_000;
+  // 4 transactions per block on average for a realistic explorer view.
   for (let i = 0; i < count; i++) {
     const ev = events[Math.floor(r() * events.length)];
+    const blockNum = startBlock + Math.floor(i / 4);
     out.push({
       id: `BC-${(i + 1).toString().padStart(5, '0')}`,
       hash: hashHex(i + 1),
@@ -74,6 +78,10 @@ function makeBlockchainEvents(r, count) {
       action: ev.action,
       performedBy: performers[Math.floor(r() * performers.length)],
       verified: r() > 0.05,
+      block: blockNum,
+      parentHash: hashHex(Math.max(1, i)),
+      gasSavings: (88 + r() * 11).toFixed(2),
+      validator: validators[Math.floor(r() * validators.length)],
     });
   }
   return out.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));

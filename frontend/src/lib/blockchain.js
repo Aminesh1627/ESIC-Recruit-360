@@ -55,7 +55,17 @@ export function showTxToast({ entity, action, performedBy = 'system@esic', onVie
           <div className="mt-2 flex items-center justify-between">
             <span className="text-[10px] text-muted-foreground font-mono">#{block.toLocaleString()}</span>
             <button
-              onClick={() => { onView?.(hash); toast.dismiss(id); }}
+              onClick={() => {
+                if (onView) {
+                  onView(hash);
+                } else {
+                  try {
+                    window.history.pushState({}, '', `/ledger?tx=${hash}`);
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  } catch (e) {}
+                }
+                toast.dismiss(id);
+              }}
               className="inline-flex items-center gap-1 text-[10px] font-semibold text-primary hover:underline"
               data-testid="tx-toast-view-ledger"
             >

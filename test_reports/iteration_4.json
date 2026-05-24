@@ -1,0 +1,43 @@
+{
+  "summary": "Iteration 4 — ESIC Chain Explorer (/ledger) fully verified. All requested features pass: sidebar Chain Explorer link, /audit 'Open Chain Explorer' button, /ledger page header + KPI cards + network info card + search + entity-filter tabs + block list + block detail dialog + tx detail dialog. Deep-link via ?tx=<hash> auto-opens matching tx dialog. End-to-end Vacancy Approve → tx-toast → 'View on ESIC Ledger' navigates to /ledger?tx= and auto-opens tx dialog showing 'sealed in block #...'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Dashboard", "issues": ["Recharts console warning: container has width(-1) height(-1) when chart renders before parent has layout size. Cosmetic only; charts display once layout settles. Consider setting minWidth/minHeight on ResponsiveContainer parent."]},
+      {"screen": "Vacancy detail sheet > Confirm Action dialog", "issues": ["Console warning: Missing `Description` or `aria-describedby` for DialogContent. Add DialogDescription or aria-describedby for a11y."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional a11y polish: add DialogDescription to the 'Confirm Action: Finance Review' dialog used by Vacancy approve flow to silence the Radix Dialog warning.",
+    "Optional fix: wrap ResponsiveContainer parents with explicit minWidth/minHeight to silence Recharts 'width(-1) height(-1)' console warnings on Dashboard."
+  ],
+  "critical_code_review_comments": [
+    "LedgerExplorer.jsx is well-structured (~360 lines) — useMemo for block grouping, parentHash short formatter, deep-link useEffect, defensive fallback (`8_420_000 + Math.floor(idx/4)`) when seeded `block` is missing. Good DRY (BlockMeta / Field components).",
+    "Tx detail dialog correctly reads ?tx= from URL and matches via db.blockchain.find(e => e.hash === tx). State cleared on dialog close via onOpenChange.",
+    "data-testid coverage on /ledger is strong: explorer-search, explorer-entity-filter, explorer-filter-<Entity>, block-row-<num>, tx-row-<id>, explorer-refresh, open-chain-explorer, tx-toast-view-ledger.",
+    "Verified-rate KPI assumes verified events; uses .filter(b => b.verified). All seeded events have verified:true so denominator works. Edge case: when totalTx===0 the Math.max(1,...) guard prevents NaN."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "Form login default Recruitment Administrator / admin.user@esic.gov.in / demo1234. Used button[type='submit'] (safer than role-text matcher).",
+  "seed_data_creation": "Cleared localStorage 'esic_db_v1' once before testing to pick up new block# / parentHash / gasSavings / validator fields seeded by makeBlockchainEvents. Initial db.blockchain count = 120 → 30 blocks (4 tx/block).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Vacancy Approve flow needs precise selectors: 1) Use page.locator('[role=tab]', has_text='Under Review') for the tab (not button:has-text which also matches 'Approved16' chip). 2) Footer Approve button text is 'Approve → Finance Review' (substring 'Approve' works). 3) The sign-confirmation dialog button text is exactly 'Confirm & Sign on-chain' (NOT 'Confirm & Sign'). 4) Tx hash is generated as 0x + 16 hex chars (short e.g. 0x270e0326334657c6). 5) Deep-link to /ledger?tx=<hash> auto-opens tx dialog via useEffect on db.blockchain (~700ms after navigation).",
+  "tests_executed_pass_summary": {
+    "sidebar_chain_explorer_link": "PASS",
+    "audit_open_chain_explorer_button": "PASS — data-testid='open-chain-explorer' present and navigates to /ledger",
+    "ledger_page_renders": "PASS — title, Network Live badge, Refresh + Timeline view actions all visible",
+    "kpi_cards_5": "PASS — Chain height, Total blocks, Total transactions, Verified rate, Avg gas savings (e.g. #8,420,029 / 30 / 120 / 100% / 93.3%)",
+    "network_card": "PASS — 'esic-private-chain · IBFT 2.0' + SHA-256/ECDSA + 99.99% uptime + 93.3% gas savings chips",
+    "search_filter": "PASS — typing 'Vacancy' narrowed 30→28 blocks, 'clear' button restored to 30",
+    "entity_filter_tabs": "PASS — clicking Vacancy tab filtered to 28 blocks; All tab restored to 30",
+    "block_row_click_opens_dialog": "PASS — block-row-8420029 click opened modal with full block meta + 4 tx rows",
+    "tx_row_click_opens_tx_dialog": "PASS — tx-row-BC-00120 click opened tx detail with Entity, Action, Tx Hash, Block#, Parent hash, Performed by, Timestamp, Gas savings, Validator, Status (Verified·Finalized) + Copy hash button",
+    "deep_link_query_param": "PASS — /ledger?tx=0xce0d1f6e5cc880ff auto-opened matching tx dialog (sample from existing db.blockchain)",
+    "e2e_tx_toast_to_ledger": "PASS — Vacancies → Under Review → first row → Approve → comment → 'Confirm & Sign on-chain' → tx-toast appeared → tx-toast-view-ledger click → URL became /ledger?tx=0x270e0326334657c6 → tx detail dialog auto-opened showing 'sealed in block #8,448,785'"
+  }
+}

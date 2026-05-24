@@ -83,9 +83,12 @@ export function StoreProvider({ children }) {
     entity, action, performedBy, verified: true,
   }, ...prev.blockchain]);
 
-  const _navigateToLedger = () => {
-    // navigation handled by caller via onView; default = goto /audit
-    try { window.history.pushState({}, '', '/audit'); window.dispatchEvent(new PopStateEvent('popstate')); } catch (e) {}
+  const _navigateToLedger = (hash) => {
+    try {
+      const path = hash ? `/ledger?tx=${hash}` : '/ledger';
+      window.history.pushState({}, '', path);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    } catch (e) {}
   };
 
   const updateVacancyStatus = useCallback((id, status, comment) => {

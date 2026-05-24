@@ -23,6 +23,7 @@ import AuditLedger from '@/pages/AuditLedger';
 import Reports from '@/pages/Reports';
 import SuperAdmin from '@/pages/SuperAdmin';
 import CandidatePortal from '@/pages/CandidatePortal';
+import LedgerExplorer from '@/pages/LedgerExplorer';
 
 function RootRedirect() {
   const { user } = useStore();
@@ -67,6 +68,7 @@ function App() {
               <Route path="/offers" element={<Offers />} />
               <Route path="/grievances" element={<Grievances />} />
               <Route path="/audit" element={<AuditLedger />} />
+              <Route path="/ledger" element={<LedgerExplorer />} />
               <Route path="/reports" element={<Reports />} />
 
               {/* Super Admin */}

@@ -597,8 +597,8 @@ function BlockchainTab() {
         <SettingItem label="Block Interval" defaultValue="6s" />
       </div>
       <div className="mt-4">
-        <Link to="/audit" className="text-sm text-primary font-medium hover:underline inline-flex items-center gap-1">
-          View live ledger <Sparkles className="h-4 w-4" />
+        <Link to="/ledger" className="text-sm text-primary font-medium hover:underline inline-flex items-center gap-1">
+          Open Chain Explorer <Sparkles className="h-4 w-4" />
         </Link>
       </div>
     </Card>

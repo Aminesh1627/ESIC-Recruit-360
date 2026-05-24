@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useStore } from '@/lib/store';
 import { useLang } from '@/i18n/LanguageContext';
 import { PageHeader } from '@/components/shared/PageHeader';
@@ -36,7 +37,12 @@ export default function AuditLedgerPage() {
       <PageHeader
         title={t('auditLedger')}
         subtitle="Immutable blockchain log of every state transition"
-        actions={<Button variant="outline" onClick={() => toast.success('Ledger exported to PDF')}><Download className="h-4 w-4 mr-1.5" /> {t('exportPdf')}</Button>}
+        actions={
+          <>
+            <Button variant="outline" onClick={() => toast.success('Ledger exported to PDF')}><Download className="h-4 w-4 mr-1.5" /> {t('exportPdf')}</Button>
+            <Button asChild data-testid="open-chain-explorer"><Link to="/ledger"><Activity className="h-4 w-4 mr-1.5" /> Open Chain Explorer</Link></Button>
+          </>
+        }
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">

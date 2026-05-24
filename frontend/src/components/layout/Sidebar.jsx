@@ -32,6 +32,7 @@ const ADMIN_GROUPS = (t) => ([
     label: 'Governance',
     items: [
       { to: '/audit',         icon: ShieldCheck,     label: t('auditLedger') },
+      { to: '/ledger',        icon: ScrollText,      label: t('chainExplorer') },
       { to: '/reports',       icon: BookOpen,        label: t('reports') },
     ],
   },
