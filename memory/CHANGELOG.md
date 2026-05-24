@@ -1,5 +1,24 @@
 ## CHANGELOG — ESIC Recruit360
 
+### 2026-02 · Iteration 4 — ESIC Chain Explorer (`/ledger`)
+**Implemented**
+- **NEW** `pages/LedgerExplorer.jsx` — a lightweight blockchain-explorer mini page hung off every "View on ESIC Ledger" link in the tx-toast.
+  - Stats header: chain height, total blocks, total transactions, verified rate %, avg gas savings %.
+  - Network info card: `esic-private-chain · IBFT 2.0`, 4 validator nodes, 6s block time, permissioned.
+  - Full search field — searches block number, tx hash, parent hash, entity, action, or performer.
+  - Entity-type filter tabs (13 entities) with live counts.
+  - Block list — each row shows block #, tx count, age, parent hash, validator, and entity chips. Click → block detail modal.
+  - Block detail modal — full meta + transactions list (click any tx → tx detail modal).
+  - Tx detail modal — Tx hash, block #, parent hash, performed-by, validator, gas savings, verified status, copy-hash actions.
+  - Deep-link support: `/ledger?tx=<hash>` auto-opens the matching tx dialog.
+- Wired `showTxToast` → "View on ESIC Ledger" to navigate to `/ledger?tx=<hash>` (was `/audit`).
+- Added sidebar entry under **Governance** group (translated EN / TA / HI).
+- `pages/AuditLedger.jsx` now has an **Open Chain Explorer** button.
+- `pages/SuperAdmin.jsx` blockchain tab link now points to `/ledger`.
+- `lib/mockData.js` — `makeBlockchainEvents` now seeds block #, parent hash, gas savings, and validator on every event (4 txs per block on average).
+
+**Tested**: `testing_agent_v3_fork` iteration 4 — 100% pass on all 11 Chain Explorer checks including the end-to-end tx-toast → `/ledger?tx=` → auto-open tx dialog flow.
+
 ### 2026-02 · Iteration 3 — Blockchain Tx Toast, Super Admin CRUD, Interview Calendar
 **Implemented**
 - **Simulated Blockchain Transaction Toast** (`lib/blockchain.js` → `showTxToast`)
